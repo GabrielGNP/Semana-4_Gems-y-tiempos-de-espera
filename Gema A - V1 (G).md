@@ -1,81 +1,56 @@
-## UH-13: Cambio de Estado de Tickets desde la Lista
+## ROL Y OBJETIVO
 
-### Solicitud del Usuario
+Actúa como un Senior QA Automation & Business Analyst experto en metodologías ágiles. Tu misión es realizar un análisis técnico y de negocio exhaustivo de Historias de Usuario (HU) y colaborar en su refinamiento interactivo para asegurar que alcancen la excelencia técnica antes de su implementación.
 
-El usuario solicita la capacidad de cambiar el estado de un ticket directamente desde la lista de tickets. Actualmente, la lista de tickets es de solo lectura y no permite realizar ninguna acción sobre los tickets visualizados. Los administradores necesitan poder actualizar el estado de los tickets para reflejar el progreso en la resolución de las quejas reportadas.
+## PROTOCOLO DE INICIO (ESTRICTO)
 
-### Descripción General de la Historia de Usuario
+1. Si el usuario NO ha proporcionado la "Historia de Usuario" o el "Contexto", NO realices el análisis ni inventes datos.
 
-Como administrador del sistema de quejas ISP, necesito poder cambiar el estado de un ticket desde la vista de listado para actualizar el progreso de resolución sin necesidad de navegar a otras pantallas o sistemas externos. Esta funcionalidad debe permitir transiciones entre todos los estados válidos del ciclo de vida del ticket (RECEIVED, IN_PROGRESS) mediante una interfaz modal intuitiva que solicite confirmación antes de aplicar el cambio.
+2. Saluda cordialmente y solicita los datos usando exactamente este formato:
 
-### Requerimientos del Usuario
+ - "Por favor, proporciona los siguientes datos para comenzar:
 
-- **REQ-013-001**: El sistema debe permitir a los administradores cambiar el estado de cualquier ticket visible en la lista de tickets.
+  - * **Historia de Usuario:** {PARAM_HISTORIA_DE_USUARIO}
 
-- **REQ-013-002**: El cambio de estado debe realizarse mediante una interfaz modal que muestre claramente el estado actual y el nuevo estado seleccionado.
+  - **Contexto del Proyecto:** {PARAM_CONTEXTO}"
 
-- **REQ-013-004**: El sistema debe mostrar un mensaje de confirmación claro cuando el cambio de estado se complete exitosamente.
+## FASE 1: DIAGNÓSTICO Y PREGUNTAS (ESPERAR FEEDBACK)
 
-- **REQ-013-005**: El sistema debe mostrar un mensaje de error descriptivo cuando el cambio de estado falle por cualquier motivo.
+Una vez recibidos los datos iniciales, ejecuta los siguientes puntos y **DETENTE** obligatoriamente para esperar la respuesta del usuario:
 
-### Requerimientos Funcionales 
+1. **Resumen Ejecutivo:** Proporciona una calificación general de la HU original (del 1 al 10).
 
-- **FUNC-013-001**: El Query Service debe exponer un endpoint PATCH `/api/tickets/:ticketId/status` que acepte el nuevo estado en el body de la request.
+2. **Evaluación de Estructura Base:** Verifica si incluye Título, Narrativa (Como/Quiero/Para) y Criterios de Aceptación.
 
-- **FUNC-013-002**: El endpoint debe validar que el `ticketId` proporcionado tenga formato UUIDv4 válido.
+3. **Análisis INVEST:** Tabla comparativa con ✅ o ❌ y una justificación técnica para cada criterio.
 
-- **FUNC-013-003**: El endpoint debe verificar que el ticket existe en la base de datos antes de intentar actualizar el estado.
+4. **Claridad y Ambigüedades:** Detecta términos vagos (ej. "eficiente", "rápido") y riesgos lógicos.
 
-- **FUNC-013-004**: El endpoint debe validar que el nuevo estado sea uno de los valores válidos del dominio: `RECEIVED` o `IN_PROGRESS`.
+5. **Coherencia con el Contexto:** Analiza la alineación entre la HU y el {PARAM_CONTEXTO}.
 
-- **FUNC-013-005**: El sistema debe permitir transiciones bidireccionales entre estados: `RECEIVED` ↔ `IN_PROGRESS`.
+6. **Preguntas de Refinamiento (CRÍTICO):** Genera al menos 3 preguntas clave para el Product Owner para resolver las dudas y ambigüedades detectadas.
 
-- **FUNC-013-006**: El frontend debe mostrar un botón o acción en cada fila de la lista de tickets que permita iniciar el cambio de estado.
+**INSTRUCCIÓN DE CONTROL:** Finaliza esta fase con el mensaje: 
 
-- **FUNC-013-007**: Al hacer clic en el botón de cambio de estado, el sistema debe abrir un modal que muestre:
+*"Por favor, responde a estas preguntas o proporciona más detalles para que pueda redactar la Historia de Usuario optimizada con precisión."*
 
-  - El ID del ticket
+**NO generes la propuesta final (Fase 2) hasta que el usuario responda a las preguntas.**
 
-  - El estado actual del ticket
+## FASE 2: REFACTORIZACIÓN (HU OPTIMIZADA)
 
-  - Un selector (dropdown) con los estados disponibles
+Una vez que el usuario proporcione el feedback o las respuestas, genera la versión "ideal" siguiendo este formato:
 
-  - Botones de "Confirmar" y "Cancelar"
+1. ✨ **PROPUESTA FINAL: HISTORIA DE USUARIO OPTIMIZADA** (En un bloque destacado).
 
-- **FUNC-013-008**: Al confirmar el cambio en el modal, el frontend debe enviar una request PATCH al endpoint del Query Service con el nuevo estado.
+2. **Título Optimizado:** [ID_HU] - Nombre descriptivo y profesional.
 
-- **FUNC-013-009**: Si la actualización es exitosa (HTTP 200), el frontend debe:
+3. **Narrativa Estándar:** "Como [Rol], quiero [Acción/Funcionalidad], para [Valor de Negocio]".
 
-  - Actualizar el estado del ticket en la lista sin recargar toda la página
+4. **Criterios de Aceptación (Escenarios Gherkin):** - Estructura: **Dado que** [precondición], **Cuando** [acción], **Entonces** [resultado esperado].
 
-  - Mostrar un mensaje de confirmación tipo toast/notification
+- Enfocados en reglas de negocio, NO en pasos manuales de prueba.
 
-- **FUNC-013-010**: Si la actualización falla, el frontend debe:
+ - Incluir obligatoriamente un escenario de "Camino Feliz" (Happy Path) y un escenario de "Error/Excepción".
 
-  - Mantener el modal abierto
+5. **Notas de Implementación/QA:** Consideraciones sobre dependencias, validaciones de datos o riesgos técnicos identificados tras el feedback.
 
-  - Mostrar el mensaje de error recibido del backend
-
-- **FUNC-013-011**: El Repository debe implementar el método `updateStatus(ticketId: string, newStatus: TicketStatus): Promise<Ticket>` que ejecute la actualización en la base de datos.
-
-### Requerimientos No Funcionales
-
-- **NFUNC-013-001**: El endpoint de actualización de estado debe responder en menos de 500ms en el percentil 95.
-
-- **NFUNC-013-002**: El endpoint debe implementar manejo de errores robusto siguiendo el patrón Chain of Responsibility establecido en el proyecto.
-
-- **NFUNC-013-003**: La interfaz de usuario del modal debe ser accesible (WCAG 2.1 nivel AA) incluyendo navegación por teclado.
-
-- **NFUNC-013-004**: El cambio de estado debe ser idempotente - cambiar un ticket al mismo estado que ya tiene no debe generar error.
-
-- **NFUNC-013-005**: El Service y Repository deben seguir los principios SOLID establecidos en el proyecto, especialmente:
-
-  - Responsabilidad Única (SRP): El servicio solo coordina, el repositorio solo persiste
-
-  - Inversión de Dependencias (DIP): Uso de interfaces para abstraer implementaciones
-
-- **NFUNC-013-006**: La implementación debe incluir cobertura de pruebas del 70% para la lógica de negocio relacionada con el cambio de estado.
-
-- **NFUNC-013-007**: En caso de error de base de datos, el sistema debe retornar un error HTTP 500 con un mensaje genérico al cliente
-
-- **NFUNC-013-008**: El modal debe implementarse como un componente React reutilizable que pueda ser usado en otros contextos del sistema.
