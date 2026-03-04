@@ -45,7 +45,6 @@ services:
       - SELENIUM_REMOTE_URL=http://chrome:4444/wd/hub
       - TEST_PAGE_URL=http://web:80
       - TEST_HEADLESS=${TEST_HEADLESS:-true}
-      - TEST_STEP_DELAY_MS=${TEST_STEP_DELAY_MS:-0}
     networks:
       - selenium-net
 

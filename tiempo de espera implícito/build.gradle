@@ -38,5 +38,4 @@ test {
     systemProperty 'selenium.remote.url', System.getenv('SELENIUM_REMOTE_URL') ?: 'http://localhost:4444/wd/hub'
     systemProperty 'test.page.url', System.getenv('TEST_PAGE_URL') ?: 'http://localhost:8080'
     systemProperty 'test.headless', System.getenv('TEST_HEADLESS') ?: 'true'
-    systemProperty 'test.step.delay.ms', System.getenv('TEST_STEP_DELAY_MS') ?: '0'
 }

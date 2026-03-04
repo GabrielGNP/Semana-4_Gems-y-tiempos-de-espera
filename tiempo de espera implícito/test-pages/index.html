@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo - Tiempo de Espera Implícito en Selenium</title>
+    <title>Demo - Implicit Wait: Capacidades y Limitaciones</title>
     <style>
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -12,139 +12,83 @@
             padding: 20px;
             background-color: #f5f5f5;
         }
-        h1 {
-            color: #2c3e50;
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 10px;
-        }
-        .section {
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+        .caso {
             background: white;
             border-radius: 8px;
             padding: 20px;
             margin: 20px 0;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 5px;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-        .dynamic-content {
-            margin-top: 15px;
-            padding: 10px;
-            border-left: 4px solid #27ae60;
-            background-color: #eafaf1;
-        }
-        #status {
-            color: #7f8c8d;
-            font-style: italic;
-        }
+        .caso h2 { margin-top: 0; }
+        .nota { color: #7f8c8d; font-style: italic; font-size: 14px; }
+        .resultado { padding: 10px; border-left: 4px solid #4caf50; background: #e8f5e9; margin-top: 10px; }
+        input:disabled { opacity: 0.5; padding: 8px; font-size: 14px; }
     </style>
 </head>
 <body>
-    <h1 id="page-title">Demo: Tiempo de Espera Implícito</h1>
+    <h1>Demo: Implicit Wait — Capacidades y Limitaciones</h1>
 
-    <!-- Sección 1: Elemento que aparece automáticamente después de un retraso -->
-    <div class="section">
-        <h2>1. Elemento con carga automática retrasada</h2>
-        <p>El siguiente elemento aparecerá automáticamente después de <strong>3 segundos</strong>:</p>
-        <p id="status">Cargando contenido...</p>
-        <div id="auto-container"></div>
+    <!-- Caso 1: Elemento que aún NO existe en el DOM -->
+    <div class="caso">
+        <h2>Caso 1: Elemento que aún no existe</h2>
+        <p>Al presionar el botón, un elemento aparecerá en el DOM después de <strong>3 segundos</strong>:</p>
+        <button id="btn-caso1" onclick="iniciarCaso1()">Iniciar Caso 1</button>
+        <div id="delayed-container"></div>
+        <p class="nota">Implicit wait debería esperar y encontrarlo. ✅</p>
     </div>
 
-    <!-- Sección 2: Elemento que aparece al hacer clic -->
-    <div class="section">
-        <h2>2. Carga dinámica con botón</h2>
-        <p>Haz clic en el botón para cargar contenido después de <strong>4 segundos</strong>:</p>
-        <button id="load-btn" onclick="loadDynamicContent()">Cargar Contenido</button>
-        <div id="dynamic-container"></div>
+    <!-- Caso 2: Elemento oculto (display: none) -->
+    <div class="caso">
+        <h2>Caso 2: Elemento oculto</h2>
+        <button id="hidden-btn" style="display: none;">Soy un botón oculto</button>
+        <p class="nota">El botón existe en el DOM pero tiene display:none. No se puede hacer clic. ❌</p>
     </div>
 
-    <!-- Sección 3: Lista que se llena progresivamente -->
-    <div class="section">
-        <h2>3. Lista que se llena progresivamente</h2>
-        <p>Los elementos de la lista aparecerán uno por uno cada <strong>2 segundos</strong>:</p>
-        <button id="start-list-btn" onclick="startListLoading()">Iniciar Carga de Lista</button>
-        <ul id="progressive-list"></ul>
+    <!-- Caso 3: Texto que cambia después -->
+    <div class="caso">
+        <h2>Caso 3: Texto que cambia después</h2>
+        <button id="btn-caso3" onclick="iniciarCaso3()">Iniciar Caso 3</button>
+        <p id="changing-text">Texto inicial</p>
+        <p class="nota">Al presionar el botón, el texto cambiará a "Texto actualizado" después de 3 segundos. ❌</p>
     </div>
 
-    <!-- Sección 4: Elemento inmediato (para comparación) -->
-    <div class="section">
-        <h2>4. Elemento presente inmediatamente</h2>
-        <p id="immediate-element">Este elemento está disponible de inmediato sin ningún retraso.</p>
+    <!-- Caso 4: Elemento deshabilitado -->
+    <div class="caso">
+        <h2>Caso 4: Elemento deshabilitado</h2>
+        <input id="disabled-input" type="text" disabled value="" placeholder="Campo deshabilitado">
+        <p class="nota">El input existe pero está disabled. No se puede escribir en él. ❌</p>
     </div>
 
     <script>
-        // 1. Elemento que aparece automáticamente después de 3 segundos
-        setTimeout(function() {
-            var container = document.getElementById('auto-container');
-            var element = document.createElement('p');
-            element.id = 'auto-loaded-element';
-            element.className = 'dynamic-content';
-            element.textContent = '¡Este elemento se cargó automáticamente después de 3 segundos!';
-            container.appendChild(element);
-
-            document.getElementById('status').textContent = '¡Contenido cargado exitosamente!';
-            document.getElementById('status').style.color = '#27ae60';
-        }, 3000);
-
-        // 2. Carga dinámica al hacer clic
-        function loadDynamicContent() {
-            var btn = document.getElementById('load-btn');
+        // Caso 1: Al presionar el botón, crear elemento después de 3 segundos
+        function iniciarCaso1() {
+            var btn = document.getElementById('btn-caso1');
             btn.disabled = true;
-            btn.textContent = 'Cargando...';
-
+            btn.textContent = 'Esperando 3 segundos...';
+            // Limpiar elemento previo si existe
+            var old = document.getElementById('delayed-element');
+            if (old) old.remove();
             setTimeout(function() {
-                var container = document.getElementById('dynamic-container');
-                var element = document.createElement('div');
-                element.id = 'dynamic-element';
-                element.className = 'dynamic-content';
-                element.innerHTML = '<strong>¡Contenido dinámico cargado!</strong><br>Este elemento apareció 4 segundos después de hacer clic en el botón.';
-                container.appendChild(element);
-
-                btn.textContent = '¡Cargado!';
-            }, 4000);
+                var el = document.createElement('p');
+                el.id = 'delayed-element';
+                el.className = 'resultado';
+                el.textContent = '¡Aparecí después de 3 segundos!';
+                document.getElementById('delayed-container').appendChild(el);
+                btn.textContent = '¡Elemento creado!';
+            }, 3000);
         }
 
-        // 3. Lista que se llena progresivamente
-        var listItems = [
-            'Primer elemento de la lista',
-            'Segundo elemento de la lista',
-            'Tercer elemento de la lista'
-        ];
-        var listIndex = 0;
-
-        function startListLoading() {
-            var btn = document.getElementById('start-list-btn');
+        // Caso 3: Al presionar el botón, cambiar texto después de 3 segundos
+        function iniciarCaso3() {
+            var btn = document.getElementById('btn-caso3');
             btn.disabled = true;
-            btn.textContent = 'Cargando elementos...';
-            addNextItem();
-        }
-
-        function addNextItem() {
-            if (listIndex < listItems.length) {
-                setTimeout(function() {
-                    var list = document.getElementById('progressive-list');
-                    var li = document.createElement('li');
-                    li.id = 'list-item-' + (listIndex + 1);
-                    li.className = 'dynamic-content';
-                    li.textContent = listItems[listIndex];
-                    list.appendChild(li);
-                    listIndex++;
-                    addNextItem();
-                }, 2000);
-            } else {
-                var btn = document.getElementById('start-list-btn');
-                btn.textContent = '¡Todos los elementos cargados!';
-            }
+            btn.textContent = 'Esperando 3 segundos...';
+            document.getElementById('changing-text').textContent = 'Texto inicial';
+            setTimeout(function() {
+                document.getElementById('changing-text').textContent = 'Texto actualizado';
+                btn.textContent = '¡Texto cambiado!';
+            }, 3000);
         }
     </script>
 </body>
