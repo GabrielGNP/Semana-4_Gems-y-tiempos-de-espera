@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo - Tiempo de Espera Implícito en Selenium</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .dynamic-content {
+            margin-top: 15px;
+            padding: 10px;
+            border-left: 4px solid #27ae60;
+            background-color: #eafaf1;
+        }
+        #status {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="page-title">Demo: Tiempo de Espera Implícito</h1>
+
+    <!-- Sección 1: Elemento que aparece automáticamente después de un retraso -->
+    <div class="section">
+        <h2>1. Elemento con carga automática retrasada</h2>
+        <p>El siguiente elemento aparecerá automáticamente después de <strong>3 segundos</strong>:</p>
+        <p id="status">Cargando contenido...</p>
+        <div id="auto-container"></div>
+    </div>
+
+    <!-- Sección 2: Elemento que aparece al hacer clic -->
+    <div class="section">
+        <h2>2. Carga dinámica con botón</h2>
+        <p>Haz clic en el botón para cargar contenido después de <strong>4 segundos</strong>:</p>
+        <button id="load-btn" onclick="loadDynamicContent()">Cargar Contenido</button>
+        <div id="dynamic-container"></div>
+    </div>
+
+    <!-- Sección 3: Lista que se llena progresivamente -->
+    <div class="section">
+        <h2>3. Lista que se llena progresivamente</h2>
+        <p>Los elementos de la lista aparecerán uno por uno cada <strong>2 segundos</strong>:</p>
+        <button id="start-list-btn" onclick="startListLoading()">Iniciar Carga de Lista</button>
+        <ul id="progressive-list"></ul>
+    </div>
+
+    <!-- Sección 4: Elemento inmediato (para comparación) -->
+    <div class="section">
+        <h2>4. Elemento presente inmediatamente</h2>
+        <p id="immediate-element">Este elemento está disponible de inmediato sin ningún retraso.</p>
+    </div>
+
+    <script>
+        // 1. Elemento que aparece automáticamente después de 3 segundos
+        setTimeout(function() {
+            var container = document.getElementById('auto-container');
+            var element = document.createElement('p');
+            element.id = 'auto-loaded-element';
+            element.className = 'dynamic-content';
+            element.textContent = '¡Este elemento se cargó automáticamente después de 3 segundos!';
+            container.appendChild(element);
+
+            document.getElementById('status').textContent = '¡Contenido cargado exitosamente!';
+            document.getElementById('status').style.color = '#27ae60';
+        }, 3000);
+
+        // 2. Carga dinámica al hacer clic
+        function loadDynamicContent() {
+            var btn = document.getElementById('load-btn');
+            btn.disabled = true;
+            btn.textContent = 'Cargando...';
+
+            setTimeout(function() {
+                var container = document.getElementById('dynamic-container');
+                var element = document.createElement('div');
+                element.id = 'dynamic-element';
+                element.className = 'dynamic-content';
+                element.innerHTML = '<strong>¡Contenido dinámico cargado!</strong><br>Este elemento apareció 4 segundos después de hacer clic en el botón.';
+                container.appendChild(element);
+
+                btn.textContent = '¡Cargado!';
+            }, 4000);
+        }
+
+        // 3. Lista que se llena progresivamente
+        var listItems = [
+            'Primer elemento de la lista',
+            'Segundo elemento de la lista',
+            'Tercer elemento de la lista'
+        ];
+        var listIndex = 0;
+
+        function startListLoading() {
+            var btn = document.getElementById('start-list-btn');
+            btn.disabled = true;
+            btn.textContent = 'Cargando elementos...';
+            addNextItem();
+        }
+
+        function addNextItem() {
+            if (listIndex < listItems.length) {
+                setTimeout(function() {
+                    var list = document.getElementById('progressive-list');
+                    var li = document.createElement('li');
+                    li.id = 'list-item-' + (listIndex + 1);
+                    li.className = 'dynamic-content';
+                    li.textContent = listItems[listIndex];
+                    list.appendChild(li);
+                    listIndex++;
+                    addNextItem();
+                }, 2000);
+            } else {
+                var btn = document.getElementById('start-list-btn');
+                btn.textContent = '¡Todos los elementos cargados!';
+            }
+        }
+    </script>
+</body>
+</html>
