@@ -24,41 +24,204 @@
         .nota { color: #7f8c8d; font-style: italic; font-size: 14px; }
         .resultado { padding: 10px; border-left: 4px solid #4caf50; background: #e8f5e9; margin-top: 10px; }
         input:disabled { opacity: 0.5; padding: 8px; font-size: 14px; }
+
+        .table .column{
+            width: 50%;
+            padding-right: 20px;
+        }
+        .table .row{
+            padding: 10px;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin: 5px;
+        }
+        .console{
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            margin-top: 20px;
+        }
+        .green{
+            color: rgb(80, 221, 141);
+        }
+        .cyan{
+            color: rgb(105, 233, 233);
+        }
+        .yellow{
+            color: rgb(255, 255, 102);
+        }
+        .orange{
+            color: rgb(234, 140, 78);
+        }
+        .title{
+            text-align: center;
+            padding: 10px;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin: 5px;
+        }
+        .red{
+            color: rgb(255, 48, 48);
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <h1>Demo: Implicit Wait — Capacidades y Limitaciones</h1>
+    <table class="table">
+        <tr>
+            <td colspan="2">
+                <h2 class="title">Caso 1: Elemento que aún no existe</h2>
+            </td>
+        </tr>
+        <tr>
+            <td class="column">
+                <div class="row">
+                    <p>En este caso, el test debe pasar debido a que selenium:</p>
+                    <p>1. Buscará el botón Iniciar Caso 1 y lo accionará </p>
+                    <p>2. Buscará repetitivamente el elemento nuevo hasta que aparezca en el DOM o pasen 10 segundos</p>
+                    <p>3. El elemento aparecerá en el DOM después de 3 segundos</p>
+                    <p>4. Una vez que el elemento esté presente, el test continuará y encontrará el elemento.</p>
+                    <div class="console" style="font-size: 13px;">
+                        <t class="green">WebElement</t> 
+                        <t class="cyan">elemento</t> = 
+                        <t class="cyan">driver</t>.<t class="yellow">findElement</t>(<t class="cyan">By</t>.<t class="yellow">id</t>(<t class="orange">"delayed-element"</t>));
+                        <br>...<br>
+                        <t class="yellow">assertNotNull</t>(<t class="cyan">elemento</t>);
+                        <t class="yellow">assertEquals</t>(<t class="orange">"¡Aparecí después de 3 segundos!"</t>, <t class="cyan">elemento</t>.<t class="yellow">getText</t>());
+                    </div>
+                </div>
+            </td>
+            <td class="column">
+                <!-- Caso 1: Elemento que aún NO existe en el DOM -->
+                <div class="caso">
+                    <h3>Elementos testeados</h3>
+                    <p>Al presionar el botón, un elemento aparecerá en el DOM después de <strong>3 segundos</strong>:</p>
+                    <button id="btn-caso1" onclick="iniciarCaso1()">Iniciar Caso 1</button>
+                    <div id="delayed-container"></div>
+                    <p class="nota">Implicit wait debería esperar y encontrarlo. ✅</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <h2 class="title">Caso 2: Elemento oculto</h2>
+            </td>
+        </tr>
+        <tr>
+            <td class="column">
+                <div class="row">
+                    <p>En este caso, el test <t class="red">NO</t> debe pasar debido a que selenium:</p>
+                    <p>1. El botón <b>SI</b> existe en el <b>DOM</b>, pero tiene el estilo display: none. <br>Esto hace que el botón esté inaccesible para un usuario normal </p>
+                    <p>2. Selenium lo buscará y lo encontrará.</p>
+                    <p>3. Intentará realizar las acciones como un usuario normal.</p>
+                    <p>4. Fallará debido a que el elemento no es accesible.</p>
+                    <div class="console" style="font-size: 13px;">
+                        <t class="green">WebElement</t> 
+                        <t class="cyan">botonOculto</t> = 
+                        <t class="cyan">driver</t>.<t class="yellow">findElement</t>(<t class="cyan">By</t>.<t class="yellow">id</t>(<t class="orange">"hidden-btn"</t>));
+                        <br>...<br>
+                        <t class="cyan">botonOculto</t>.<t class="yellow">click</t>();
+                    </div>
+                </div>
+            </td>
+            <td class="column">
+                <!-- Caso 2: Elemento oculto (display: none) -->
+                <div class="caso">
+                    <h3>Elementos testeados</h3>
+                    <button id="hidden-btn" style="display: none;">Soy un botón oculto</button>
+                    <p class="nota">El botón existe en el DOM pero tiene display:none. No se puede hacer clic. ❌</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <h2 class="title">Caso 3: Texto que cambia después</h2>
+            </td>
+        </tr>
+        <tr>
+            <td class="column">
+                <div class="row">
+                    <p>En este caso, el test <t class="red">NO</t> debe pasar debido a que:</p>
+                    <p>1. El elemento <b>SI</b> existe en el <b>DOM</b> desde el principio y tiene un texto</p>
+                    <p>2. Selenium presiona el botón Iniciar Caso 3.</p>
+                    <p>3. Selenium buscará el elemento y lo encontrará.</p>
+                    <p>4. Recuperará el contenido del elemento (texto del elemento).</p>
+                    <p>5. El elemento cambiará de texto después de 3 segundos.</p>
+                    <p>6. Selenium arrojará un error porque el texto que recuperó es distinto al esperado <br> el texto esperado es el texto que aparece luego de 3 segundos.</p>
+                    <div class="console" style="font-size: 13px;">
+                        <t class="green">WebElement</t> 
+                        <t class="cyan">elemento</t> = 
+                        <t class="cyan">driver</t>.<t class="yellow">findElement</t>(<t class="cyan">By</t>.<t class="yellow">id</t>(<t class="orange">"changing-text"</t>));
+                        <br>
+                        <t class="green">String</t> 
+                        <t class="cyan">textoObtenido</t> = 
+                        <t class="cyan">elemento</t>.<t class="yellow">getText</t>();
+                        <br>...<br>
+                        <t class="yellow">assertEquals</t>(<t class="orange">"Texto actualizado"</t>, textoObtenido, <t class="orange">"Implicit wait NO espera cambios de texto. Se obtuvo: '"</t> + textoObtenido + <t class="orange">"'"</t>);
+                    </div>
+                </div>
+            </td>
+            <td class="column">
+                <!-- Caso 3: Texto que cambia después -->
+                <div class="caso">
+                    <h3>Elementos testeados</h3>
+                    <button id="btn-caso3" onclick="iniciarCaso3()">Iniciar Caso 3</button>
+                    <p id="changing-text">Texto inicial</p>
+                    <p class="nota">Al presionar el botón, el texto cambiará a "Texto actualizado" después de 3 segundos. ❌</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <h2 class="title">Caso 4: Elemento deshabilitado</h2>
+            </td>
+        </tr>
+        <tr>
+            <td class="column">
+                <div class="row">
+                    <p>En este caso, el test <t class="red">NO</t> debe pasar debido a que:</p>
+                    <p>1. El elemento <b>SI</b> existe en el <b>DOM</b> desde el principio y está deshabilitado</p>
+                    <p>2. Selenium buscará el elemento y lo encontrará.</p>
+                    <p>3. Intentará utilizarlo (por ejemplo, escribir en el campo).</p>
+                    <p>4. Selenium arrojará un error porque el elemento está deshabilitado.</p>
+                    <div class="console" style="font-size: 13px;">
+                        <t class="green">WebElement</t> 
+                        <t class="cyan">inputDeshabilitado</t> = 
+                        <t class="cyan">driver</t>.<t class="yellow">findElement</t>(<t class="cyan">By</t>.<t class="yellow">id</t>(<t class="orange">"disabled-input"</t>));
+                        <br>
+                        <t class="cyan">inputDeshabilitado</t>.<t class="yellow">sendKeys</t>(<t class="orange">"texto de prueba"</t>);
+                        <br>
+                        <t class="green">String</t>
+                        <t class="cyan">valorActual</t> = 
+                        <t class="cyan">inputDeshabilitado</t>.<t class="yellow">getAttribute</t>(<t class="orange">"value"</t>);
+                        <br>...<br>
+                        <t class="yellow">assertEquals</t>(<t class="orange">"texto de prueba"</t>, valorActual, <t class="orange">"No se pudo escribir en el campo deshabilitado. Implicit wait NO espera habilitación."</t>);
+                        
+                    </div>
+                </div>
+            </td>
+            <td class="column">
+                <!-- Caso 4: Elemento deshabilitado -->
+                <div class="caso">
+                    <h3>Elementos testeados</h3>
+                    <input id="disabled-input" type="text" disabled value="" placeholder="Campo deshabilitado">
+                    <p class="nota">El input existe pero está disabled. No se puede escribir en él. ❌</p>
+                </div>
+            </td>
+        </tr>
+    </table>
+    
 
-    <!-- Caso 1: Elemento que aún NO existe en el DOM -->
-    <div class="caso">
-        <h2>Caso 1: Elemento que aún no existe</h2>
-        <p>Al presionar el botón, un elemento aparecerá en el DOM después de <strong>3 segundos</strong>:</p>
-        <button id="btn-caso1" onclick="iniciarCaso1()">Iniciar Caso 1</button>
-        <div id="delayed-container"></div>
-        <p class="nota">Implicit wait debería esperar y encontrarlo. ✅</p>
-    </div>
+    
 
-    <!-- Caso 2: Elemento oculto (display: none) -->
-    <div class="caso">
-        <h2>Caso 2: Elemento oculto</h2>
-        <button id="hidden-btn" style="display: none;">Soy un botón oculto</button>
-        <p class="nota">El botón existe en el DOM pero tiene display:none. No se puede hacer clic. ❌</p>
-    </div>
+    
 
-    <!-- Caso 3: Texto que cambia después -->
-    <div class="caso">
-        <h2>Caso 3: Texto que cambia después</h2>
-        <button id="btn-caso3" onclick="iniciarCaso3()">Iniciar Caso 3</button>
-        <p id="changing-text">Texto inicial</p>
-        <p class="nota">Al presionar el botón, el texto cambiará a "Texto actualizado" después de 3 segundos. ❌</p>
-    </div>
-
-    <!-- Caso 4: Elemento deshabilitado -->
-    <div class="caso">
-        <h2>Caso 4: Elemento deshabilitado</h2>
-        <input id="disabled-input" type="text" disabled value="" placeholder="Campo deshabilitado">
-        <p class="nota">El input existe pero está disabled. No se puede escribir en él. ❌</p>
-    </div>
+    
 
     <script>
         // Caso 1: Al presionar el botón, crear elemento después de 3 segundos
