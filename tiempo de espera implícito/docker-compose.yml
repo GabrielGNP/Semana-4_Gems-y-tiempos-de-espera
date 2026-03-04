@@ -1,0 +1,53 @@
+services:
+  # Servidor web que sirve las páginas HTML de prueba
+  web:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - ./test-pages:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - selenium-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost/ || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Selenium con Chrome (navegador headless)
+  chrome:
+    image: selenium/standalone-chrome:latest
+    restart: unless-stopped
+    shm_size: '2g'
+    ports:
+      - "4444:4444"   # Selenium Grid Dashboard
+      - "7900:7900"   # noVNC (visualizar el navegador en vivo)
+    networks:
+      - selenium-net
+    environment:
+      - SE_NODE_MAX_SESSIONS=2
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4444/wd/hub/status"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Contenedor que ejecuta los tests de Selenium
+  tests:
+    build: .
+    profiles: ["tests"]
+    depends_on:
+      chrome:
+        condition: service_healthy
+      web:
+        condition: service_healthy
+    environment:
+      - SELENIUM_REMOTE_URL=http://chrome:4444/wd/hub
+      - TEST_PAGE_URL=http://web:80
+      - TEST_HEADLESS=${TEST_HEADLESS:-true}
+    networks:
+      - selenium-net
+
+networks:
+  selenium-net:
+    driver: bridge

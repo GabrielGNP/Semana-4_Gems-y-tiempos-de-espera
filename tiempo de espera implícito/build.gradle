@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.example'
+version = '1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Selenium WebDriver
+    testImplementation 'org.seleniumhq.selenium:selenium-java:4.27.0'
+
+    // JUnit 5
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.3'
+}
+
+test {
+    useJUnitPlatform()
+
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+        showExceptions true
+        showCauses true
+        showStackTraces true
+        exceptionFormat "full"
+    }
+
+    // Pasa variables de entorno al test
+    systemProperty 'selenium.remote.url', System.getenv('SELENIUM_REMOTE_URL') ?: 'http://localhost:4444/wd/hub'
+    systemProperty 'test.page.url', System.getenv('TEST_PAGE_URL') ?: 'http://localhost:8080'
+    systemProperty 'test.headless', System.getenv('TEST_HEADLESS') ?: 'true'
+}
