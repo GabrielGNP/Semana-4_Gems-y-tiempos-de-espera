@@ -187,7 +187,7 @@ import static org.junit.jupiter.api.Assertions.*;
             
             // Si llegamos aquí, algo está mal
             marcarCaso(2, "failed");
-            fail("Se esperaba ElementNotInteractableException");
+            fail("El boton se pudo ejecutar, Se esperaba ElementNotInteractableException");
         } catch (ElementNotInteractableException e) {
             System.out.println("  ❌ ElementNotInteractableException: " + e.getMessage());
             System.out.println("  → Implicit wait NO verifica visibilidad o accesibilidad.");
