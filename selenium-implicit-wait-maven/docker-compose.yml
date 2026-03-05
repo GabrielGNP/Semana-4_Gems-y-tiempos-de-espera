@@ -1,0 +1,28 @@
+services:
+  web:
+    image: nginx:1.27-alpine
+    container_name: demo-web
+    volumes:
+      - ./web:/usr/share/nginx/html:ro
+    ports:
+      - "8080:80"
+
+  selenium:
+    image: selenium/standalone-chrome:4.23.1
+    container_name: demo-selenium
+    shm_size: 2gb
+    depends_on:
+      - web
+    ports:
+      - "4444:4444"
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: demo-tests
+    depends_on:
+      - selenium
+      - web
+    environment:
+      - TZ=America/New_York
