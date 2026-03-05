@@ -5,7 +5,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-// import java.io.IOException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
@@ -55,7 +55,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
     @AfterAll
     void tearDown() {
+        System.out.println("\n╔═════════════════════════════════════════════╗");
+        System.out.println("║  ✅ TODOS LOS TESTS HAN FINALIZADO          ║");
+        System.out.println("║  Esperando 24 segundos para inspeccionar     ║");
+        System.out.println("║  los resultados en noVNC...                  ║");
+        System.out.println("╚══════════════════════════════════════════════╝\n");
+        System.out.flush();
+        
+        try {
+            Thread.sleep(24000);  // Esperar 24 segundos para que el usuario inspeccione noVNC
+        } catch (InterruptedException e) {
+            System.out.println("⚠️  Espera interrumpida: " + e.getMessage());
+        }
+        
         if (driver != null) {
+            System.out.println("Cerrando navegador...\n");
             driver.quit();
         }
     }
