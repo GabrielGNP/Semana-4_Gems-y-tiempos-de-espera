@@ -43,6 +43,7 @@
             border-radius: 4px;
             font-family: 'Courier New', Courier, monospace;
             margin-top: 20px;
+            
         }
         .green{
             color: rgb(80, 221, 141);
@@ -56,6 +57,22 @@
         .orange{
             color: rgb(234, 140, 78);
         }
+        /* Estados de los tests */
+        .caso.in-progress {
+            background: #39a6ff56 !important;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .caso.failed {
+            background: #ff1e0e4b !important;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .caso.passed {
+            background: #4caf4f60 !important;
+            color: white;
+            transition: all 0.3s ease;
+        }
         .title{
             text-align: center;
             padding: 10px;
@@ -68,10 +85,50 @@
             color: rgb(255, 48, 48);
             font-weight: bold;
         }
+        .progressBar{
+            background: #e0e0e0; 
+            border-radius: 10px; 
+            overflow: hidden; 
+            margin-bottom: 20px; 
+            height: 30px;
+            position: fixed;
+            width: 90%;
+            bottom: 0px;
+            left: 5%;
+            box-shadow: 2px 2px 5px grey;
+        }
+        .progresBarComplete{
+            background: linear-gradient(90deg, #257028, #1acf22);
+            width: 0%;
+            height: 100%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 6px 0px 5px #129912;
+        }
     </style>
 </head>
 <body>
-    <h1>Demo: Implicit Wait — Capacidades y Limitaciones</h1>
+    <h1>Implicit Wait — Tiempo de esperas implícitos con Selenium</h1>
+    
+    <!-- Barra de progreso -->
+    <div class="progressBar">
+        <div id="progress-bar" class="progresBarComplete">
+            0%
+        </div>
+    </div>
+    
+    <div class="title" style="margin-block: 50px;">
+        <p>La espera implícita le dice a Selenium cuánto tiempo máximo debe intentar localizar un elemento antes de lanzar una excepción.</p>
+    </div>
+    <h2 class="title">¿Como se configura Implicit Wait?</h2>
+    <div class="console">
+        <p style="display: flex;flex-wrap: wrap;"><t class="cyan">driver</t>.<t class="yellow">manage</t>().<t class="yellow">timeouts</t>().<t class="yellow">implicitlyWait</t>(<t class="cyan">Duration</t>.<t class="yellow">ofSeconds</t>(10));</p>
+    </div>
     <table class="table">
         <tr>
             <td colspan="2">
