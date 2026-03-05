@@ -25,11 +25,12 @@ WebElement element = driver.findElement(By.id("mi-elemento"));
 
 ```bash
 # Ejecutar tests en modo headless (sin visualización)
-docker compose --profile tests run --rm --no-deps tests
+docker compose --profile tests run -it --rm --no-deps tests
 
 # Ejecutar tests visibles en noVNC (localhost:7900)
 docker compose up -d web chrome
-docker compose --profile tests run --rm --no-deps -e TEST_HEADLESS=false tests
+docker compose --profile tests run -it --rm --no-deps -e TEST_HEADLESS=false tests
+
 docker compose down
 ```
 
@@ -46,7 +47,7 @@ docker compose up -d web chrome
 # Contraseña: secret
 
 # 3) Ejecuta los tests sin headless
-docker compose --profile tests run --rm --no-deps -e TEST_HEADLESS=false tests
+docker compose --profile tests run -it --rm --no-deps -e TEST_HEADLESS=false tests
 
 # 4) Observa los tests en tiempo real en la ventana noVNC
 
@@ -151,7 +152,7 @@ Nginx Web Server → test-pages/index.html
 
 ### Ejecutar tests sin reconstruir imagen
 ```bash
-docker compose --profile tests run --rm --no-deps tests
+docker compose --profile tests run  -it --rm --no-deps tests
 ```
 
 ### Reconstruir imagen de tests
