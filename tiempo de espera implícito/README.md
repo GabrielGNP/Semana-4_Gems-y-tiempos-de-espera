@@ -6,6 +6,28 @@ Proyecto de **Java + Selenium + Gradle** completamente **dockerizado** que demue
 
 El **Implicit Wait** le indica al WebDriver que espere un tiempo determinado cuando intenta encontrar un elemento que no está disponible inmediatamente en el DOM. Una vez configurado, aplica **globalmente** a todas las llamadas `findElement()` y `findElements()`.
 
+
+|**Línea de Código**|**Descripción**|
+|-------------------|---------------|
+| import java.net.URL; | Para crear la URL del servidor Selenium remoto |
+| import org.openqa.selenium.*; | Para WebDriver, By, WebElement, ChromeOptions |
+| import org.openqa.selenium.chrome.ChromeOptions; | Para configurar opciones del navegador Chrome |
+| import org.openqa.selenium.remote.RemoteWebDriver; | Para conectarse al Selenium Grid remoto (Docker) |
+| private WebDriver driver; | Variable global para mantener la sesión entre tests |
+| String remoteUrl = System.getProperty("selenium.remote.url", "http://localhost:4444/wd/hub"); | Obtener URL del servidor Selenium (configuración Docker) |
+| driver = new RemoteWebDriver(new URL(remoteUrl), options); | CRUCIAL: Establece la conexión con Docker/Selenium Grid |
+| driver.get(baseUrl); | CRUCIAL: Navega a la página web (en este caso está dockerizado) |
+| driver.findElement(By.id(...)) | CRUCIAL: Busca elementos en la página |
+| driver.quit(); | CRUCIAL: Cierra sesión y libera recursos |
+|-------------------|---------------|
+
+Líneas de código explícitos para IMPLICIT WAITS
+|**Línea de Código**|**Descripción**|
+|-------------------|---------------|
+| import java.time.Duration; | Para especificar tiempos en formato manejable (segundos, milisegundos) |
+| driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10)); | ESTA ES LA ÚNICA LÍNEA QUE ACTIVA LOS IMPLICIT WAITS - Sin esta, los findElement() fallan inmediatamente si el elemento no existe |
+
+
 ```java
 // Configurar implicit wait de 10 segundos
 driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
@@ -15,6 +37,18 @@ WebElement element = driver.findElement(By.id("mi-elemento"));
 ```
 
 **IMPORTANTE:** El Implicit Wait **SOLO** espera a que el elemento **exista en el DOM**. NO verifica visibilidad, accesibilidad, cambios de contenido, ni estado habilitado.
+
+## Flujo de funcionamiento
+1. **JUnit controla el flujo de los tests**: @BeforeAll, @BeforeEach, @Test, @AfterEach, @AfterAll
+2. **Selenium simula acciones del usuario**: findElement(), click(), sendKeys(), getText()
+3. **Esto genera resultados**: El navegador responde a las acciones
+4. **JUnit siempre evalúa resultados**
+- Cada test puede tener validaciones assertions (assertEquals(), assertNotNull(), etc.)
+- Si un assertion falla -> el test FALLA
+- Si todos los assertion del test pasan -> el test PASA
+- Si no hay assertions, se considera PASSED por completarse sin eerores
+- Fail() proboca que el test falle, independientemente de los assertions
+5. **JUnit genera reportes**: HTML, XML, COnsola
 
 ## Requisitos
 
@@ -68,21 +102,7 @@ docker compose up -d web chrome
 # Ejecuta tests manualmente o desde otra terminal
 ```
 
-## Estructura del Proyecto
 
-```
-tiempo de espera implícito/
-├── build.gradle                 # Configuración de Gradle y dependencias
-├── settings.gradle              # Nombre del proyecto
-├── Dockerfile                   # Imagen Docker para ejecutar los tests
-├── docker-compose.yml           # Orquestación de contenedores (3 servicios)
-├── nginx.conf                   # Configuración del servidor web (IPv4 + IPv6)
-├── README.md                    # Este archivo
-├── test-pages/
-│   └── index.html               # Página HTML con 4 casos de demostración
-└── src/test/java/com/example/
-    └── ImplicitWaitTest.java    # Tests JUnit 5 con Selenium 4
-```
 
 ## Los 4 Casos de Demostración
 
@@ -95,34 +115,9 @@ tiempo de espera implícito/
 
 Cada caso es activado por un **botón** que inicia un temporizador JavaScript de 3 segundos.
 
-## Características Principales
 
-✅ **Proyecto 100% Dockerizado**
-- Sin dependencias locales (Java, Gradle, Chrome)
-- Contiene web server, navegador y tests
 
-✅ **Visualización en Tiempo Real**
-- noVNC integrado en puerto 7900
-- Ver los tests ejecutándose live
-- Un solo clic por navegador (sin recargas de página)
-
-✅ **Single Browser Session**
-- Los 4 tests usan la MISMA sesión de navegador
-- La página se carga UNA SOLA VEZ en `@BeforeAll`
-- Cada test solo hace clic en su botón correspondiente
-
-✅ **Arquitectura Clara**
-```
-Gradle Test Runner (contenedor tests)
-        ↓ (conexión remota)
-Selenium Grid (localhost:4444)
-        ↓ 
-Chrome Headless/Visible
-        ↓ (solicita página)
-Nginx Web Server → test-pages/index.html
-```
-
-## Variables de Entorno
+## Variables de Entorno (docker-compose)
 
 | Variable | Valor | Descripción |
 |----------|-------|-------------|
@@ -171,11 +166,3 @@ docker compose logs -f chrome
 docker compose down --volumes --remove-orphans
 ```
 
-## Conceptos Demostrados
-
-- ✅ Implicit Wait para búsqueda de elementos
-- ❌ Limitaciones: NO espera visibilidad, accesibilidad, cambios de contenido
-- 🔄 RemoteWebDriver con Selenium Grid
-- 📱 Single browser session con `@TestInstance(PER_CLASS)`
-- 🎯 Button-triggered timers en lugar de auto-start
-- 🎨 Interfaz HTML responsiva con explicaciones por caso

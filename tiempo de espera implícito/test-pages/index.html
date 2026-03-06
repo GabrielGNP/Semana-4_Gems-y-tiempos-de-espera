@@ -47,15 +47,24 @@
         }
         .green{
             color: rgb(80, 221, 141);
+
         }
         .cyan{
             color: rgb(105, 233, 233);
+         
+        }
+        .blue{
+            color: rgb(75, 158, 231);
+            font-weight: bold;
         }
         .yellow{
             color: rgb(255, 255, 102);
         }
         .orange{
             color: rgb(234, 140, 78);
+        }
+        .pink{
+            color: rgb(216, 74, 195);
         }
         /* Estados de los tests */
         .caso.in-progress {
@@ -126,7 +135,26 @@
         <p>La espera implícita le dice a Selenium cuánto tiempo máximo debe intentar localizar un elemento antes de lanzar una excepción.</p>
     </div>
     <h2 class="title">¿Como se configura Implicit Wait?</h2>
+    
+    <p>Dependencias necesarias:</p>
     <div class="console">
+        <t class="blue">import</t> java.net.URL;<br>
+        <t class="blue">import</t> org.openqa.selenium.*;<br>
+        <t class="blue">import</t> org.openqa.selenium.chrome.ChromeOptions;<br>
+        <t class="blue">import</t> org.openga.selenium.remote.RemoteWebDriver;<br>
+    </div>
+    <p>Códigos importantes:</p>
+    <div class="console">
+        <t class="blue">private</t> <t class="green">WebDriver</t> <t class="cyan">driver</t>; <br><br>
+        <t class="green">String</t> <t class="cyan">remoteUrl</t> = <t class="cyan">System</t>.<t class="yellow">getProperty</t>(<t class="orange">"selenium.remote.url"</t>, <t class="orange">"http://localhost:4444/wd/hub"</t>);<br>
+        <t class="cyan">driver</t> = <t class="pink">new</t> <t class="yellow">RemoteWebDriver</t> (<t class="pink">new</t> <t class="yellow">URL</t>(remoteUrl), options);<br>
+        <t class="cyan">driver</t>.<t class="yellow">get</t>(baseUrl); <br>
+        <t class="cyan">driver</t>.<t class="yellow">findElement</t>(<t class="cyan">By</t>.<t class="yellow">id</t>(<t class="orange">"ID_DEL_ELEMENTO"</t>)); <br>
+        <t class="cyan">driver</t>.<t class="yellow">quit</t>(); <br>
+    </div>
+    <p>Uso de Selenium con tiempos de espera (Implícitos)</p>
+    <div class="console">
+        <t class="blue">import</t> java.time.Duration;
         <p style="display: flex;flex-wrap: wrap;"><t class="cyan">driver</t>.<t class="yellow">manage</t>().<t class="yellow">timeouts</t>().<t class="yellow">implicitlyWait</t>(<t class="cyan">Duration</t>.<t class="yellow">ofSeconds</t>(10));</p>
     </div>
     <table class="table">
