@@ -2,20 +2,25 @@ package com.example;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class ImplicitWaitTest {
 
   @Test
   void implicitWait_findsLateElements() throws Exception {
     ChromeOptions options = new ChromeOptions();
+    // options.addArguments("--headless=new")
+    // ChromeDriver local (Selenium Manager descarga chromedriver automáticamente)
+    WebDriver driver = new ChromeDriver(options);
     
     options.addArguments("--no-sandbox");
     options.addArguments("--disable-dev-shm-usage");
@@ -27,10 +32,11 @@ public class ImplicitWaitTest {
 
     try {
       // Espera implícita: Selenium reintenta findElement/findElements hasta este tiempo
-      driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+      driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(1));
 
-      // Sitio web servido por Nginx en el servicio "web"
-      driver.get("http://web:80/index.html");
+      // Cargar el HTML local con file://
+      Path htmlPath = Paths.get("web", "index.html").toAbsolutePath();
+      driver.get(htmlPath.toUri().toString());
 
       // Estos elementos NO existen al inicio; aparecen tras ~3s por JS.
       WebElement username = driver.findElement(By.id("username"));
@@ -44,7 +50,9 @@ public class ImplicitWaitTest {
       assertTrue(statusText.contains("enviado -> Luis"), "No se reflejó el envío en el status.");
       Thread.sleep(60000);
     } finally {
-      Thread.sleep(4000); // Para ver el resultado antes de cerrar el navegador
+
+      Thread.sleep(4000); // Para ver el resultado antes de cerrar el navegador (opcional)
+
       driver.quit();
     }
   }
