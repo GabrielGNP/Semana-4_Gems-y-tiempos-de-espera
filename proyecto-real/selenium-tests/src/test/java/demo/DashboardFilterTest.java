@@ -1,6 +1,7 @@
 package demo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 
@@ -12,7 +13,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class DashboardFilterTest {
 
@@ -22,9 +25,7 @@ public class DashboardFilterTest {
   void setUp() throws InterruptedException {
     ChromeOptions options = new ChromeOptions();
     boolean headless = !"false".equalsIgnoreCase(System.getenv("HEADLESS"));
-    if (headless) {
-      // options.addArguments("--headless=new");
-    }
+    // options.addArguments("--headless=new");
     options.addArguments("--no-sandbox");
     options.addArguments("--disable-dev-shm-usage");
 
@@ -68,7 +69,18 @@ public class DashboardFilterTest {
     dateFromInput.sendKeys("06-03-2026");
     Thread.sleep(2000);
 
-    // Verificar que los filtros quedaron seleccionados correctamente
+    // 5. Hacer click en el ticket para abrir el modal de cambio de estado
+    String ticketId = "fe78659d-2e5c-41f8-94a5-77c808749fb8"; 
+    WebElement ticketRow = driver.findElement(By.id("ticket-" + ticketId));
+    ticketRow.click();
+
+    // 6. Seleccionar "En Progreso" (value="IN_PROGRESS") en el select de cambio de estado
+    WebElement changeStateSelect = driver.findElement(By.id("change-state-select"));
+    Select stateSelect = new Select(changeStateSelect);
+    stateSelect.selectByValue("IN_PROGRESS");
+    Thread.sleep(1000);
+
+    
     assertEquals("RECEIVED", statusSelect.getFirstSelectedOption().getAttribute("value"),
         "El filtro de estado debería ser RECEIVED");
     assertEquals("HIGH", prioritySelect.getFirstSelectedOption().getAttribute("value"),
@@ -77,5 +89,7 @@ public class DashboardFilterTest {
         "El filtro de tipo debería ser NO_SERVICE");
     assertEquals("2026-03-06", dateFromInput.getAttribute("value"),
         "El filtro de fecha desde debería ser 2026-03-06");
+    assertEquals("IN_PROGRESS", stateSelect.getFirstSelectedOption().getAttribute("value"),
+        "El estado del ticket debería ser IN_PROGRESS");
   }
 }
