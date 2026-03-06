@@ -1,4 +1,4 @@
-package demo;
+package com.example;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -16,12 +16,10 @@ public class ImplicitWaitTest {
   @Test
   void implicitWait_findsLateElements() throws Exception {
     ChromeOptions options = new ChromeOptions();
-    // En contenedores suele ser necesario:
-    // options.addArguments("--headless=new"); //<-------- IMPORTANTE: sin esto, el test no encuentra los elementos dinámicos
+    
     options.addArguments("--no-sandbox");
     options.addArguments("--disable-dev-shm-usage");
 
-    // Selenium server (Grid standalone) vive en el servicio "selenium" del compose:
     WebDriver driver = new RemoteWebDriver(
         new java.net.URL("http://selenium:4444/wd/hub"),
         options
