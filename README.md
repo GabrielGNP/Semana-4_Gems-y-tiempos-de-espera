@@ -82,7 +82,7 @@ docker compose --profile tests build --no-cache tests
 
 por último se ejecutan los tests sin headless para poder verlos en noVNC
 ```
-docker compose --profile tests run  -it --rm --no-deps tests
+docker compose --profile tests run -it --rm --no-deps -e TEST_HEADLESS=false tests
 ```
 
 **Importante**: Ir al navegador e ir a la ruta http://localhost:7900 para visualizar noVNC.
