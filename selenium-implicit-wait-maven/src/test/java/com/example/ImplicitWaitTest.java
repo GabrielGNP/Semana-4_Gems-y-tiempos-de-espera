@@ -18,7 +18,7 @@ public class ImplicitWaitTest {
   @Test
   void implicitWait_findsLateElements() throws Exception {
     ChromeOptions options = new ChromeOptions();
-    options.addArguments("--headless=new");
+    // options.addArguments("--headless=new");
     options.addArguments("--no-sandbox");
     options.addArguments("--disable-dev-shm-usage");
 
@@ -27,7 +27,7 @@ public class ImplicitWaitTest {
 
     try {
       // Espera implícita: Selenium reintenta findElement/findElements hasta este tiempo
-      driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+      driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(1));
 
       // Cargar el HTML local con file://
       Path htmlPath = Paths.get("web", "index.html").toAbsolutePath();
@@ -44,6 +44,9 @@ public class ImplicitWaitTest {
       String statusText = driver.findElement(By.id("status")).getText();
       assertTrue(statusText.contains("enviado -> Luis"), "No se reflejó el envío en el status.");
     } finally {
+
+      Thread.sleep(4000); // Para ver el resultado antes de cerrar el navegador (opcional)
+
       driver.quit();
     }
   }
