@@ -1,4 +1,4 @@
-package demo;
+package com.example;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -18,17 +18,17 @@ public class ImplicitWaitTest {
   @Test
   void implicitWait_findsLateElements() throws Exception {
     ChromeOptions options = new ChromeOptions();
-<<<<<<< HEAD
-    // options.addArguments("--headless=new");
-=======
-    // En contenedores suele ser necesario:
-    // options.addArguments("--headless=new"); //<-------- IMPORTANTE: sin esto, el test no encuentra los elementos dinámicos
->>>>>>> main
+    // options.addArguments("--headless=new")
+    // ChromeDriver local (Selenium Manager descarga chromedriver automáticamente)
+    WebDriver driver = new ChromeDriver(options);
+    
     options.addArguments("--no-sandbox");
     options.addArguments("--disable-dev-shm-usage");
 
-    // ChromeDriver local (Selenium Manager descarga chromedriver automáticamente)
-    WebDriver driver = new ChromeDriver(options);
+    WebDriver driver = new RemoteWebDriver(
+        new java.net.URL("http://selenium:4444/wd/hub"),
+        options
+    );
 
     try {
       // Espera implícita: Selenium reintenta findElement/findElements hasta este tiempo
@@ -50,13 +50,9 @@ public class ImplicitWaitTest {
       assertTrue(statusText.contains("enviado -> Luis"), "No se reflejó el envío en el status.");
       Thread.sleep(60000);
     } finally {
-<<<<<<< HEAD
 
       Thread.sleep(4000); // Para ver el resultado antes de cerrar el navegador (opcional)
 
-=======
-      Thread.sleep(4000); // Para ver el resultado antes de cerrar el navegador
->>>>>>> main
       driver.quit();
     }
   }
