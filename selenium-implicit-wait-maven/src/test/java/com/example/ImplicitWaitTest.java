@@ -44,6 +44,7 @@ public class ImplicitWaitTest {
       // Validación simple: el texto de status cambia después del click
       String statusText = driver.findElement(By.id("status")).getText();
       assertTrue(statusText.contains("enviado -> Luis"), "No se reflejó el envío en el status.");
+      Thread.sleep(60000);
     } finally {
       Thread.sleep(4000); // Para ver el resultado antes de cerrar el navegador
       driver.quit();
