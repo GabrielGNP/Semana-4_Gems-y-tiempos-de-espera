@@ -69,9 +69,8 @@ public class DashboardFilterTest {
     dateFromInput.sendKeys("06-03-2026");
     Thread.sleep(2000);
 
-    // 5. Hacer click en el ticket para abrir el modal de cambio de estado
-    String ticketId = "fe78659d-2e5c-41f8-94a5-77c808749fb8"; 
-    WebElement ticketRow = driver.findElement(By.id("ticket-" + ticketId));
+    // 5. Hacer click en el primer ticket filtrado para abrir el modal de cambio de estado
+    WebElement ticketRow = driver.findElement(By.cssSelector("tr[id^='ticket-']"));
     ticketRow.click();
 
     // 6. Seleccionar "En Progreso" (value="IN_PROGRESS") en el select de cambio de estado
