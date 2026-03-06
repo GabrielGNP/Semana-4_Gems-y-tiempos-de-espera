@@ -2,37 +2,36 @@ package demo;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class ImplicitWaitTest {
 
   @Test
   void implicitWait_findsLateElements() throws Exception {
     ChromeOptions options = new ChromeOptions();
-    // En contenedores suele ser necesario:
     options.addArguments("--headless=new");
     options.addArguments("--no-sandbox");
     options.addArguments("--disable-dev-shm-usage");
 
-    // Selenium server (Grid standalone) vive en el servicio "selenium" del compose:
-    WebDriver driver = new RemoteWebDriver(
-        new java.net.URL("http://selenium:4444/wd/hub"),
-        options
-    );
+    // ChromeDriver local (Selenium Manager descarga chromedriver automáticamente)
+    WebDriver driver = new ChromeDriver(options);
 
     try {
       // Espera implícita: Selenium reintenta findElement/findElements hasta este tiempo
       driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
-      // Sitio web servido por Nginx en el servicio "web"
-      driver.get("http://web:80/index.html");
+      // Cargar el HTML local con file://
+      Path htmlPath = Paths.get("web", "index.html").toAbsolutePath();
+      driver.get(htmlPath.toUri().toString());
 
       // Estos elementos NO existen al inicio; aparecen tras ~3s por JS.
       WebElement username = driver.findElement(By.id("username"));

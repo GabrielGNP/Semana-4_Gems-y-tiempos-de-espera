@@ -108,7 +108,7 @@
         }
         .progresBarComplete{
             background: linear-gradient(90deg, #257028, #1acf22);
-            width: 0%;
+            width: 50%;
             height: 100%;
             transition: width 0.3s ease;
             display: flex;
@@ -183,7 +183,7 @@
             </td>
             <td class="column">
                 <!-- Caso 1: Elemento que aún NO existe en el DOM -->
-                <div class="caso">
+                <div class="caso in-progress">
                     <h3>Elementos testeados</h3>
                     <p>Al presionar el botón, un elemento aparecerá en el DOM después de <strong>3 segundos</strong>:</p>
                     <button id="btn-caso1" onclick="iniciarCaso1()">Iniciar Caso 1</button>
