@@ -173,8 +173,6 @@ import static org.junit.jupiter.api.Assertions.*;
         System.out.println("══════════════════════════════════════════════════════════");
 
         try {
-            // No necesitamos recargar — el botón oculto siempre está en el DOM
-
             // findElement() SÍ encuentra el botón oculto (está en el DOM).
             // Implicit wait busca existencia en el DOM, NO visibilidad.
             WebElement botonOculto = driver.findElement(By.id("hidden-btn"));

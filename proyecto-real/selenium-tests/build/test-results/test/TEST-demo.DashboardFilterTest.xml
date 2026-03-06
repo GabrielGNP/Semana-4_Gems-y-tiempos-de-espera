@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="demo.DashboardFilterTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-03-06T19:40:16.273Z" hostname="G-NOOTBOOK" time="44.326">
+<testsuite name="demo.DashboardFilterTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-03-06T21:01:13.471Z" hostname="G-NOOTBOOK" time="75.727">
   <properties/>
-  <testcase name="filterByEstadoRecibido_PrioridadAlta_TipoSinServicio()" classname="demo.DashboardFilterTest" time="44.174"/>
+  <testcase name="filterByEstadoRecibido_PrioridadAlta_TipoSinServicio()" classname="demo.DashboardFilterTest" time="75.653"/>
   <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[mar. 06, 2026 4:40:25 P. M. org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch
+  <system-err><![CDATA[mar. 06, 2026 6:01:49 P. M. org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch
 ADVERTENCIA: Unable to find CDP implementation matching 145
-mar. 06, 2026 4:40:25 P. M. org.openqa.selenium.chromium.ChromiumDriver lambda$new$5
+mar. 06, 2026 6:01:49 P. M. org.openqa.selenium.chromium.ChromiumDriver lambda$new$5
 ADVERTENCIA: Unable to find version of CDP to use for 145.0.7632.160. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.23.1` where the version ("v86") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.
 ]]></system-err>
 </testsuite>
