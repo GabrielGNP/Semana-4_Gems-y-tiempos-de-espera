@@ -18,7 +18,12 @@ public class ImplicitWaitTest {
   @Test
   void implicitWait_findsLateElements() throws Exception {
     ChromeOptions options = new ChromeOptions();
+<<<<<<< HEAD
     // options.addArguments("--headless=new");
+=======
+    // En contenedores suele ser necesario:
+    // options.addArguments("--headless=new"); //<-------- IMPORTANTE: sin esto, el test no encuentra los elementos dinámicos
+>>>>>>> main
     options.addArguments("--no-sandbox");
     options.addArguments("--disable-dev-shm-usage");
 
@@ -43,10 +48,15 @@ public class ImplicitWaitTest {
       // Validación simple: el texto de status cambia después del click
       String statusText = driver.findElement(By.id("status")).getText();
       assertTrue(statusText.contains("enviado -> Luis"), "No se reflejó el envío en el status.");
+      Thread.sleep(60000);
     } finally {
+<<<<<<< HEAD
 
       Thread.sleep(4000); // Para ver el resultado antes de cerrar el navegador (opcional)
 
+=======
+      Thread.sleep(4000); // Para ver el resultado antes de cerrar el navegador
+>>>>>>> main
       driver.quit();
     }
   }
